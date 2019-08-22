@@ -2,8 +2,6 @@ const express = require('express');
 const http = require('http');
 
 const Export = require('./src/export-rss');
-
-console.log({ Export });
 const app = express();
 
 app.get('/', async (req, res) => {
@@ -13,7 +11,7 @@ app.get('/', async (req, res) => {
     <html lang="en" dir="ltr">
       <head>
         <meta charset="utf-8">
-        <title>Open Source Stats</title>
+        <title>Medium Export</title>
         <style>
           body {
             font-family: -apple-system;
