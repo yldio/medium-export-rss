@@ -21,7 +21,6 @@ module.exports = async () => {
       pubDate,
       'content:encoded': content,
     }) => {
-      console.log({ title });
       return {
         title,
         link,
@@ -29,7 +28,7 @@ module.exports = async () => {
         author,
         pubDate,
         content,
-        markdown: HtmlToMarkdown(content),
+        markdown: HtmlToMarkdown(content[0]),
       };
     }
   );

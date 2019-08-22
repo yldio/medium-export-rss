@@ -52,4 +52,4 @@ turndownService.addRule('snippetIframe', {
   },
 });
 
-return html => turndownService.turndown(content[0]);
+module.exports = html => turndownService.turndown(html);
