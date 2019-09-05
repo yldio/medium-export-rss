@@ -21,14 +21,15 @@ module.exports = async () => {
       pubDate,
       'content:encoded': content,
     }) => {
+      const markdown = HtmlToMarkdown(content[0]);
+
       return {
         title,
         link,
         category,
         author,
         pubDate,
-        content,
-        markdown: HtmlToMarkdown(content[0]),
+        markdown
       };
     }
   );

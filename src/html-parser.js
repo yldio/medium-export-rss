@@ -55,13 +55,15 @@ const turndownService = new TurndownService();
 turndownService.addRule('iframe', {
   filter: 'iframe',
   replacement: function (content, node, options) {
-    // console.log('iframe content: ', content);
-    return ('<script src="https://gist.github.com/jamesseanwright/22520366bd1d6b891ffa6964f8a6404c.js"></script>');
-    // return content;
+    const src = content.slice(11, 68);
+
+    return `mediumgist:${src}`;
   }
 })
 
 // turndownService.keep(['iframe'])
+
+// const later = new Promise((resolve, reject) => setTimeout(() => resolve('huehue'), 3000));
 
 
 module.exports = html => turndownService.turndown(JSON.stringify(html));
