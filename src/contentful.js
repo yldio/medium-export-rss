@@ -23,8 +23,8 @@ const generatePost = async postData => {
   }
 
   const { title, link, category, author, pubDate, content, markdown } = postData;
-  console.log('postData', JSON.stringify(postData, 2, null));
-  // console.log('final markdown: ', markdown);
+  // console.log('postData', JSON.stringify(postData, 2, null));
+  console.log('final markdown: ', markdown);
 }
 
 
