@@ -55,7 +55,7 @@ const getIframeContent = async url => {
 
 const gistBuilder = id => `<Gist id="${id}" />`;
 
-const youtubeVideoBuilder = id => `<iframe width="560" height="315" src="https://www.youtube.com/embed/${id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+const youtubeVideoBuilder = id => `<YouTube videoId="${id}" />`;
 
 const genericIframeBuilder = link => `<iframe width="560" height="315" src="${link}"`;
 
@@ -65,6 +65,7 @@ const processIframes = async markdown => {
   if(ocorrences.length > 0) {
     let processedMarkdown = markdown;
     let hasGist = false;
+    let hasYoutube = false;
 
     await Promise.all(ocorrences.map(async ({ chunk, url }) => {
       const { type, id, link } = await getIframeContent(url);
@@ -75,6 +76,7 @@ const processIframes = async markdown => {
           processedMarkdown = processedMarkdown.replace(chunk, gistBuilder(id));
           break;
         case 'youtube':
+          hasYoutube = true;
           processedMarkdown = processedMarkdown.replace(chunk, youtubeVideoBuilder(id));
           break;
         default:
@@ -84,6 +86,13 @@ const processIframes = async markdown => {
 
     if(hasGist) {
       processedMarkdown = `import { Gist } from '@blocks/kit'
+
+      ${processedMarkdown}
+      `;
+    }
+
+    if(hasYoutube) {
+      processedMarkdown = `import { YouTube } from '@blocks/kit'
 
       ${processedMarkdown}
       `;
