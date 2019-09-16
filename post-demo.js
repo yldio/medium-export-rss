@@ -6,29 +6,26 @@ const generatePost = require('./src/contentful');
 
 const stripMarkdown = str => str.substring(1, str.length-1);
 
-const findOcorrences = str => {
+const findOccurrences = str => {
   const regex = /<iframecontent:(.*)>/gi;
-  let result, ocorrences = [];
+  let result, occurrences = [];
 
   while ( (result = regex.exec(str)) ) {
     const [ chunk, url ] = result;
 
-    ocorrences.push({
+    occurrences.push({
       chunk,
       url
     });
   }
 
-  return ocorrences;
+  return occurrences;
 };
 
 const getIframeContent = async url => {
   const getContent = await fetch(url);
   const content = await getContent.text();
   const [ , link ] = content.match(/<meta property="og:url" content="(.*?)"/)
-  let type;
-
-  console.log('link', link);
 
   switch (true) {
     case link.includes('gist.github'):
@@ -61,14 +58,14 @@ const youtubeVideoBuilder = id => `<YouTube videoId="${id}" />`;
 const genericIframeBuilder = link => `<iframe width="560" height="315" src="${link}"`;
 
 const processIframes = async markdown => {
-  const ocorrences = findOcorrences(markdown);
+  const occurrences = findOccurrences(markdown);
 
-  if(ocorrences.length > 0) {
+  if(occurrences.length > 0) {
     let processedMarkdown = markdown;
     let hasGist = false;
     let hasYoutube = false;
 
-    await Promise.all(ocorrences.map(async ({ chunk, url }) => {
+    await Promise.all(occurrences.map(async ({ chunk, url }) => {
       const { type, id, link } = await getIframeContent(url);
 
       switch (type) {
