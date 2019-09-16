@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 
 const Export = require('./src/export-rss');
+const downloader = require('./downloader');
 const generatePost = require('./src/contentful');
 
 const stripMarkdown = str => str.substring(1, str.length-1);
@@ -104,13 +105,41 @@ const processIframes = async markdown => {
   return markdown;
 }
 
+const downloadImages = async (images, slug) => {
+  if (!fs.existsSync('images')) {
+    fs.mkdirSync('images');
+  }
+  const imgDir = path.join('images', slug);
+  if (!fs.existsSync(imgDir)) {
+    fs.mkdirSync(imgDir);
+  }
+
+  const promises = [];
+  images.forEach((v) => {
+      const localImgPath = path.join(imgDir, v.name);
+      promises.push(downloader(v.src, localImgPath));
+  });
+
+  const downloaded = await Promise.all(promises);
+  console.log('finished', downloaded);
+};
+
 module.exports.init = async () => {
   const posts = await Export();
 
   posts.map(async post => {
     const postData = {...post};
-    const strippedMarkdown = stripMarkdown(post.markdown);
+    const { slug, markdown } = post;
+    const { md, images } = markdown;
+    // console.log('md', md);
+    console.log('images', images);
+    const strippedMarkdown = stripMarkdown(md);
     const processedMarkdown = await processIframes(strippedMarkdown);
+
+    // download images
+    downloadImages(images, slug);
+    // replace image refs on md
+    
     postData.markdown = processedMarkdown;
 
     generatePost(postData);

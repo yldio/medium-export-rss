@@ -30,4 +30,50 @@ turndownService.addRule('iframe', {
   }
 })
 
-module.exports = html => turndownService.turndown(JSON.stringify(html));
+let images = [];
+
+// parsing figure and figcaption for markdown
+turndownService.addRule('img', {
+  filter: 'figure',
+  replacement: function (content, node) {
+      const lines = content.split('\n');
+      const caption = lines[2];
+      const [ , imgSrc ] = content.match(/\(\\"(.*?)\\"\)/);
+
+      // console.log('imgSrc', imgSrc);
+      const imgFileName = getImageName(imgSrc);
+      // console.log('imgFileName', imgFileName);
+      const localImgPath = path.join('img', imgFileName);
+      // console.log('localImgPath', localImgPath);
+      element = "![](" + localImgPath + ")";
+      // console.log('element', element);
+
+      images.push({
+        src: imgSrc,
+        name: imgFileName,
+        caption
+      });
+
+      return `<image:${imgFileName}>`;
+      return `![](path_to_image)
+      *image_caption*`;
+  }
+})
+
+const convert = function (html) {
+  images = [];
+  return { md: turndownService.turndown(JSON.stringify(html)), images };
+}
+
+const getImageName = function (imgSrc) {
+  const imgUrl = url.parse(imgSrc);
+  let imgFileName = path.basename(imgUrl.pathname);
+  const parsed = path.parse(imgFileName);
+  const name = parsed.name.replace(/[^a-zA-Z0-9]/g, '__');
+  const ext = parsed.ext ? parsed.ext : ".jpg"; // if no extension, add .jpg
+  imgFileName = name + ext;
+  return imgFileName;
+}
+
+
+module.exports = convert;
