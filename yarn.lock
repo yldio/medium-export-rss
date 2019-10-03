@@ -313,6 +313,13 @@ apr-map@^3.0.3:
     apr-engine-sum "^3.0.3"
     lodash.defaults "^4.2.0"
 
+apr-waterfall@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/apr-waterfall/-/apr-waterfall-3.0.3.tgz#6785375d051f04a01329d2dda5e87ae0c2b13385"
+  integrity sha1-Z4U3XQUfBKATKdLdpeh64MKxM4U=
+  dependencies:
+    apr-engine-each "^3.0.3"
+
 argparse@^1.0.7:
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
@@ -1884,6 +1891,11 @@ lodash.isfinite@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/lodash.isfinite/-/lodash.isfinite-3.3.2.tgz#fb89b65a9a80281833f0b7478b3a5104f898ebb3"
   integrity sha1-+4m2WpqAKBgz8LdHizpRBPiY67M=
+
+lodash.kebabcase@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.kebabcase/-/lodash.kebabcase-4.1.1.tgz#8489b1cb0d29ff88195cceca448ff6d6cc295c36"
+  integrity sha1-hImxyw0p/4gZXM7KRI/21swpXDY=
 
 lodash.keys@^4.2.0:
   version "4.2.0"

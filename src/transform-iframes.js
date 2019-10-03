@@ -1,12 +1,11 @@
-/* eslint-disable */
-const fs = require('fs');
-const path = require('path');
 const fetch = require('node-fetch');
-const Export = require('./src/export-rss-json');
-const downloader = require('./downloader');
-const generatePost = require('./src/contentful');
 
-const stripMarkdown = str => str.substring(1, str.length - 1);
+const gistBuilder = id => `<Gist id="${id}" />`;
+
+const youtubeVideoBuilder = id => `<YouTube videoId="${id}" />`;
+
+const genericIframeBuilder = link =>
+  `<iframe width="560" height="315" src="${link}"`;
 
 const findOccurrences = str => {
   const regex = /<iframecontent:(.*)>/gi;
@@ -26,13 +25,11 @@ const findOccurrences = str => {
 };
 
 const getIframeContent = async url => {
-  const getContent = await fetch(url);
-  const content = await getContent.text();
-  const [, link] = content.match(/<meta property="og:url" content="(.*?)"/);
+  const { url: forwardedUrl } = await fetch(url);
 
   switch (true) {
-    case link.includes('gist.github'): {
-      const [, gistData] = link.split('https://gist.github.com/');
+    case forwardedUrl.includes('gist.github'): {
+      const [, gistData] = forwardedUrl.split('https://gist.github.com/');
       const [, gistId] = gistData.split('/');
 
       return {
@@ -41,8 +38,10 @@ const getIframeContent = async url => {
       };
     }
 
-    case link.includes('youtube'): {
-      const [, videoId] = link.split('https://www.youtube.com/watch?v=');
+    case forwardedUrl.includes('youtube'): {
+      const [, videoId] = forwardedUrl.split(
+        'https://www.youtube.com/watch?v=',
+      );
 
       return {
         type: 'youtube',
@@ -53,19 +52,12 @@ const getIframeContent = async url => {
     default:
       return {
         type: 'unknown',
-        link,
+        link: forwardedUrl,
       };
   }
 };
 
-const gistBuilder = id => `<Gist id="${id}" />`;
-
-const youtubeVideoBuilder = id => `<YouTube videoId="${id}" />`;
-
-const genericIframeBuilder = link =>
-  `<iframe width="560" height="315" src="${link}"`;
-
-const processIframes = async markdown => {
+module.exports = async markdown => {
   const occurrences = findOccurrences(markdown);
 
   if (occurrences.length > 0) {
@@ -103,42 +95,20 @@ const processIframes = async markdown => {
 
     if (hasGist) {
       processedMarkdown = `import { Gist } from '@blocks/kit'
-
-      ${processedMarkdown}
-      `;
+    
+          ${processedMarkdown}
+          `;
     }
 
     if (hasYoutube) {
       processedMarkdown = `import { YouTube } from '@blocks/kit'
-
-      ${processedMarkdown}
-      `;
+    
+          ${processedMarkdown}
+          `;
     }
 
     return processedMarkdown;
   }
 
   return markdown;
-};
-
-module.exports.init = async () => {
-  const posts = await Export();
-
-  posts.map(async post => {
-    const postData = { ...post };
-    const { slug, markdown } = post;
-    const { md, images } = markdown;
-    // console.log('md', md);
-    console.log('images', images);
-    const strippedMarkdown = stripMarkdown(md);
-    const processedMarkdown = await processIframes(strippedMarkdown);
-
-    // download images
-    downloadImages(images, slug);
-    // replace image refs on md
-
-    postData.markdown = processedMarkdown;
-
-    generatePost(postData);
-  });
 };
