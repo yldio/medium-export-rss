@@ -8,6 +8,8 @@
  * the MDX element we're going to generate gist snippets with.
  */
 
+const url = require('url');
+const path = require('path');
 const TurndownService = require('turndown');
 const turndownService = new TurndownService();
 
@@ -23,57 +25,56 @@ const turndownService = new TurndownService();
  */
 turndownService.addRule('iframe', {
   filter: 'iframe',
-  replacement: function (content, node, options) {
-    const [ , href ] = content.match(/href=\\\\"(.*)\\\\">/);
+  replacement: content => {
+    const [, href] = content.match(/href=\\\\"(.*)\\\\">/);
 
     return `<iframecontent:${href}>`;
-  }
-})
+  },
+});
 
 let images = [];
 
 // parsing figure and figcaption for markdown
 turndownService.addRule('img', {
   filter: 'figure',
-  replacement: function (content, node) {
-      const lines = content.split('\n');
-      const caption = lines[2];
-      const [ , imgSrc ] = content.match(/\(\\"(.*?)\\"\)/);
+  replacement: content => {
+    const lines = content.split('\n');
+    const caption = lines[2];
+    const [, imgSrc] = content.match(/\(\\"(.*?)\\"\)/);
 
-      // console.log('imgSrc', imgSrc);
-      const imgFileName = getImageName(imgSrc);
-      // console.log('imgFileName', imgFileName);
-      const localImgPath = path.join('img', imgFileName);
-      // console.log('localImgPath', localImgPath);
-      element = "![](" + localImgPath + ")";
-      // console.log('element', element);
+    // console.log('imgSrc', imgSrc);
+    const imgFileName = getImageName(imgSrc);
+    // console.log('imgFileName', imgFileName);
+    const localImgPath = path.join('img', imgFileName);
+    // console.log('localImgPath', localImgPath);
+    const element = '![](' + localImgPath + ')';
+    console.log('element', element);
 
-      images.push({
-        src: imgSrc,
-        name: imgFileName,
-        caption
-      });
+    images.push({
+      src: imgSrc,
+      name: imgFileName,
+      caption,
+    });
 
-      return `<image:${imgFileName}>`;
-      return `![](path_to_image)
-      *image_caption*`;
-  }
-})
+    return `<image:${imgFileName}>`;
+    // return `![](path_to_image)
+    //   *image_caption*`;
+  },
+});
 
-const convert = function (html) {
+const convert = function(html) {
   images = [];
   return { md: turndownService.turndown(JSON.stringify(html)), images };
-}
+};
 
-const getImageName = function (imgSrc) {
+const getImageName = function(imgSrc) {
   const imgUrl = url.parse(imgSrc);
   let imgFileName = path.basename(imgUrl.pathname);
   const parsed = path.parse(imgFileName);
   const name = parsed.name.replace(/[^a-zA-Z0-9]/g, '__');
-  const ext = parsed.ext ? parsed.ext : ".jpg"; // if no extension, add .jpg
+  const ext = parsed.ext ? parsed.ext : '.jpg'; // if no extension, add .jpg
   imgFileName = name + ext;
   return imgFileName;
-}
-
+};
 
 module.exports = convert;

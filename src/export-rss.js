@@ -22,7 +22,7 @@ module.exports = async () => {
       'content:encoded': content,
     }) => {
       const markdown = HtmlToMarkdown(content[0]);
-      const [ , slug ] = link[0].match(/yld-blog\/(.*)/);
+      const [, slug] = link[0].match(/yld-blog\/(.*)/);
 
       return {
         title,
@@ -31,9 +31,9 @@ module.exports = async () => {
         author,
         pubDate,
         markdown,
-        slug
+        slug,
       };
-    }
+    },
   );
 
   return posts;

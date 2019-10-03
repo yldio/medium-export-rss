@@ -17,4 +17,3 @@ or, to start a local server with RSS content:
 ```
 node demo.js
 ```
-
