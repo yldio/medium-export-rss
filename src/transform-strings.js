@@ -4,7 +4,10 @@
  * trying to render this component...
  */
 
-const toReplace = [['<React.Suspense/>', '`<React.Suspense/>`']];
+const toReplace = [
+  ['<React.Suspense/>', '`<React.Suspense/>`'],
+  ['<React.Fragment/>', '`<React.Fragment/>`'],
+];
 
 exports.module = post =>
   toReplace.map(([str, replace]) =>
