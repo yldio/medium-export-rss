@@ -36,12 +36,11 @@ module.exports = async (posts, environment) =>
       locale,
     );
 
-    console.log({ contentfulPostData });
-    // const newPost = await environment.createEntry(
-    //   'blogPost',
-    //   contentfulPostData,
-    // );
+    const newPost = await environment.createEntry(
+      'blogPost',
+      contentfulPostData,
+    );
 
-    // const asset = await environment.getEntry(newPost.sys.id);
-    // await asset.publish();
+    const asset = await environment.getEntry(newPost.sys.id);
+    await asset.publish();
   });

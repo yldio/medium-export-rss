@@ -15,7 +15,7 @@ module.exports = async (post, environment) => {
 
     transformedMd = transformedMd.replace(
       `<image:${fileName}>`,
-      `<FigureImage src="${url}" caption="${caption}"/>`,
+      `<FigureImage src="${url}" ${caption ? `caption="${caption}"` : ''}/>`,
     );
   });
 
