@@ -29,10 +29,10 @@ const generatePost = async postData => {
     // author,
     // pubDate,
     // content,
-    markdown,
+    md,
   } = postData;
   // console.log('postData', JSON.stringify(postData, 2, null));
-  console.log('final markdown: ', markdown);
+  console.log('final markdown: ', md);
 };
 
 module.exports = postData => generatePost(postData);

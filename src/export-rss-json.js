@@ -15,19 +15,18 @@ module.exports = async data => {
     ({
       title,
       link,
-      category,
-      'dc:creator': author,
-      pubDate,
+      category: tags,
+      'dc:creator': authorName,
+      pubDate: firstPublishedAt,
       'content:encoded': content,
     }) => {
       const [, slug] = link[0].match(/yld-blog\/(.*)/);
-
       return {
         title,
         link,
-        category,
-        author,
-        pubDate,
+        tags,
+        authorName,
+        firstPublishedAt,
         html: content[0],
         slug,
       };

@@ -5,7 +5,7 @@ const gistBuilder = id => `<Gist id="${id}" />`;
 const youtubeVideoBuilder = id => `<YouTube videoId="${id}" />`;
 
 const genericIframeBuilder = link =>
-  `<iframe width="560" height="315" src="${link}"`;
+  `<iframe width="560" height="315" src="${link}"/>`;
 
 const findOccurrences = str => {
   const regex = /<iframecontent:(.*)>/gi;
@@ -57,28 +57,26 @@ const getIframeContent = async url => {
   }
 };
 
-module.exports = async markdown => {
-  const occurrences = findOccurrences(markdown);
+module.exports = async post => {
+  const { md, title } = post;
+
+  let processedMarkdown = md;
+
+  const occurrences = findOccurrences(md);
 
   if (occurrences.length > 0) {
-    let processedMarkdown = markdown;
-    let hasGist = false;
-    let hasYoutube = false;
-
     await Promise.all(
       occurrences.map(async ({ chunk, url }) => {
         const { type, id, link } = await getIframeContent(url);
 
         switch (type) {
           case 'gist':
-            hasGist = true;
             processedMarkdown = processedMarkdown.replace(
               chunk,
               gistBuilder(id),
             );
             break;
           case 'youtube':
-            hasYoutube = true;
             processedMarkdown = processedMarkdown.replace(
               chunk,
               youtubeVideoBuilder(id),
@@ -92,23 +90,18 @@ module.exports = async markdown => {
         }
       }),
     );
-
-    if (hasGist) {
-      processedMarkdown = `import { Gist } from '@blocks/kit'
-    
-          ${processedMarkdown}
-          `;
-    }
-
-    if (hasYoutube) {
-      processedMarkdown = `import { YouTube } from '@blocks/kit'
-    
-          ${processedMarkdown}
-          `;
-    }
-
-    return processedMarkdown;
   }
 
-  return markdown;
+  const frontMatter = `---
+title: ${title}
+root: '/blog'
+---
+`;
+
+  processedMarkdown = `${frontMatter}
+
+${processedMarkdown}
+`;
+
+  return processedMarkdown;
 };

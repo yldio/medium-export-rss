@@ -15,15 +15,12 @@ module.exports = async (post, environment) => {
 
     transformedMd = transformedMd.replace(
       `<image:${fileName}>`,
-      `<Medium src="${url}" caption="${caption}"/>`,
+      `<FigureImage src="${url}" caption="${caption}"/>`,
     );
   });
 
-  if (images && images.length > 0) {
-    transformedMd = `import { MediumImage } from '@blocks/kit'
-${transformedMd}
-`;
-  }
-
-  return transformedMd;
+  return {
+    ...post,
+    md: transformedMd,
+  };
 };
