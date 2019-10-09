@@ -43,7 +43,7 @@ turndownService.addRule('iframe', {
   replacement: content => {
     const [, href] = content.match(/href="(.*)">/);
 
-    return `<iframecontent:${href}>`;
+    return ` <iframecontent:"${href}"> `;
   },
 });
 
@@ -53,13 +53,15 @@ turndownService.addRule('img', {
   replacement: content => {
     const lines = content.split('\n');
     const caption = lines[1];
-    const [, imgSrc] = content.match(/!\[\]\((.*)\)/);
+    const res = content.match(/!\[(.*)\]\((.*)\)/i);
 
+    const [, alt, imgSrc] = res;
     const { name, ext } = getImageMeta(imgSrc);
 
     images.push({
       src: imgSrc,
       ext,
+      alt,
       name,
       caption,
     });
@@ -68,9 +70,55 @@ turndownService.addRule('img', {
   },
 });
 
+turndownService.addRule('p', {
+  filter: 'p',
+  replacement: content => {
+    const newContent = content.replace(/<([^>]*)>/g, (_, match) => {
+      if (match) {
+        return '`<' + match + '>`';
+      }
+    });
+
+    return '\n\n' + newContent + '\n\n';
+  },
+});
+
+turndownService.addRule('blockquote', {
+  filter: 'blockquote',
+  replacement: content => {
+    const newContent = content.replace(/<([^>]*)>/g, (_, match) => {
+      if (match) {
+        return `&lt;${match}&gt;`;
+      }
+    });
+
+    // eslint-disable-next-line no-useless-concat
+    return '\n\n' + '>' + newContent + '\n\n';
+  },
+});
+
+turndownService.addRule('pre', {
+  filter: 'pre',
+  replacement: content => {
+    const newContent = content.replace(/\*\*(\w*)\*\*/gm, (_, match) => match);
+    console.log({ content, newContent });
+    /**
+     * Same rules as from turndown codeblocks, see here:
+     * https://github.com/domchristie/turndown/blob/master/src/commonmark-rules.js#L111
+     *
+     * medium doesn't give us correct html (pre>code) just <pre>{content}</pre>
+     * so we have to manage it ourselves
+     */
+    // eslint-disable-next-line no-useless-concat
+    return '\n\n' + '```' + '\n' + newContent + '\n' + '```' + '\n\n';
+  },
+});
+
 module.exports = async ({ html, ...rest }) => {
   images = [];
-  const md = turndownService.turndown(html);
+  const md = turndownService.turndown(html, {
+    codeBlockStyle: 'fenced',
+  });
 
   return {
     ...rest,

@@ -8,7 +8,7 @@ const genericIframeBuilder = link =>
   `<iframe width="560" height="315" src="${link}"/>`;
 
 const findOccurrences = str => {
-  const regex = /<iframecontent:(.*)>/gi;
+  const regex = /<iframecontent:"(\S*)">/gi;
   let result = [];
   const occurrences = [];
 
@@ -58,7 +58,7 @@ const getIframeContent = async url => {
 };
 
 module.exports = async post => {
-  const { md, title } = post;
+  const { md, title, slug } = post;
 
   let processedMarkdown = md;
 
@@ -93,7 +93,8 @@ module.exports = async post => {
   }
 
   const frontMatter = `---
-title: ${title}
+title: "${title}"
+slug: ${slug}
 root: '/blog'
 ---
 `;

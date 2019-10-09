@@ -5,11 +5,16 @@
  */
 
 const toReplace = [
+  ['<React.Suspense />', '`<React.Suspense />`'],
   ['<React.Suspense/>', '`<React.Suspense/>`'],
+  ['<React.Fragment />', '`<React.Fragment />`'],
   ['<React.Fragment/>', '`<React.Fragment/>`'],
+  ['https://medium.com/yld-blog/', 'https://yld.io/blog/'],
+  ['https://medium.com/yld-engineering-blog/', 'https://yld.io/blog/'],
 ];
 
-exports.module = post =>
-  toReplace.map(([str, replace]) =>
-    post.replace(new RegExp(str, 'g'), replace),
+module.exports = post =>
+  toReplace.reduce(
+    (acc, [str, replace]) => acc.replace(new RegExp(str, 'g'), replace),
+    post,
   );

@@ -166,3 +166,5 @@ $RECYCLE.BIN/
 .next
 static/_next
 .vscode/
+md/
+xml/

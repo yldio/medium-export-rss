@@ -19,7 +19,7 @@ module.exports = async ({ caption, name, ext, src }, title, environment) => {
   const { fields, sys } = await asset.processForAllLocales();
 
   // Publish asset
-  const draftAsset = await environment.getAsset(sys.id);
+  // const draftAsset = await environment.getAsset(sys.id);
   //   await draftAsset.publish();
 
   const contentfulTitle = fields.title['en-US'];

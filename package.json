@@ -4,20 +4,27 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@mdx-js/mdx": "^1.5.1",
+    "apr-intercept": "^3.0.3",
     "apr-main": "^4.0.3",
     "apr-map": "^3.0.3",
+    "apr-reduce": "^3.0.3",
     "apr-waterfall": "^3.0.3",
     "contentful-management": "^5.10.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "got": "^9.6.0",
+    "lodash.flatten": "^4.4.0",
     "lodash.get": "^4.4.2",
     "lodash.kebabcase": "^4.1.1",
+    "mz": "^2.7.0",
     "node-fetch": "^2.6.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
+    "require-all": "^3.0.0",
     "turndown": "^5.0.3",
-    "xml2js": "^0.4.19"
+    "xml2js": "^0.4.19",
+    "xml2json": "^0.11.2"
   },
   "scripts": {
     "lint": "eslint . --ext .js",
