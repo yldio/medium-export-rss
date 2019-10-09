@@ -101,7 +101,6 @@ turndownService.addRule('pre', {
   filter: 'pre',
   replacement: content => {
     const newContent = content.replace(/\*\*(\w*)\*\*/gm, (_, match) => match);
-    console.log({ content, newContent });
     /**
      * Same rules as from turndown codeblocks, see here:
      * https://github.com/domchristie/turndown/blob/master/src/commonmark-rules.js#L111

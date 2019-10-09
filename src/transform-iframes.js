@@ -58,7 +58,7 @@ const getIframeContent = async url => {
 };
 
 module.exports = async post => {
-  const { md, title, slug } = post;
+  const { md } = post;
 
   let processedMarkdown = md;
 
@@ -92,17 +92,8 @@ module.exports = async post => {
     );
   }
 
-  const frontMatter = `---
-title: "${title}"
-slug: ${slug}
-root: '/blog'
----
-`;
-
-  processedMarkdown = `${frontMatter}
-
-${processedMarkdown}
-`;
-
-  return processedMarkdown;
+  return {
+    ...post,
+    md: processedMarkdown,
+  };
 };

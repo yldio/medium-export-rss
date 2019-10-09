@@ -9,7 +9,7 @@ module.exports = async (data, key = 'rss.channel.item') => {
     const {
       title,
       link,
-      category: tags,
+      category: tags = [],
       'dc:creator': authorName,
       pubDate: firstPublishedAt,
       'content:encoded': content,
