@@ -6,6 +6,7 @@
     "camelcase": 0,
     "no-template-curly-in-string": 1,
     "capitalized-comments": 0,
-    "no-console": 0
+    "no-console": 0,
+    "valid-jsdoc": 0
   }
 }

@@ -115,6 +115,7 @@ turndownService.addRule('pre', {
 
 module.exports = async ({ html, ...rest }) => {
   images = [];
+
   const md = turndownService.turndown(html, {
     codeBlockStyle: 'fenced',
   });

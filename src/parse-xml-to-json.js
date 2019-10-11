@@ -5,27 +5,27 @@ const Get = require('lodash.get');
 module.exports = async (data, key = 'rss.channel.item') => {
   const parsed = await Xml2Js.toJson(data, { object: true });
 
-  const posts = await Map(Get(parsed, key, []), res => {
+  return Map(Get(parsed, key, []), res => {
     const {
       title,
       link,
       category: tags = [],
       'dc:creator': authorName,
-      pubDate: firstPublishedAt,
+      pubDate,
       'content:encoded': content,
     } = res;
 
     const [, slug] = link.match(/yld-blog\/(.*)/);
+    const firstPublishedAt = new Date(pubDate);
+
     return {
       title,
       link,
-      tags,
+      tags: Array.isArray(tags) ? tags : [tags],
       authorName,
-      firstPublishedAt,
+      firstPublishedAt: firstPublishedAt.toISOString(),
       html: content,
       slug,
     };
   });
-
-  return posts;
 };

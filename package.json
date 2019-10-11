@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@mdx-js/mdx": "^1.5.1",
+    "@sindresorhus/slugify": "^0.9.1",
     "apr-intercept": "^3.0.3",
     "apr-main": "^4.0.3",
     "apr-map": "^3.0.3",

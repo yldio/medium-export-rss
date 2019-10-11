@@ -7,9 +7,9 @@ const postToCmsKeysMap = {
 const contentfulEntryKeys = [
   'title',
   'firstPublishedAt',
+  'headerImage',
   'slug',
   'tags',
-  'link',
   'authorName',
   'content',
 ];
@@ -21,7 +21,7 @@ const generateContentfulEntryFromPost = (post, keys, locale) => ({
     (acc, curr) => ({
       ...acc,
       [curr]: {
-        [locale]: post[postToCmsKeysMap[curr]],
+        [locale]: post[postToCmsKeysMap[curr]] || post[curr],
       },
     }),
     {},
@@ -42,5 +42,7 @@ module.exports = async (posts, environment) =>
     );
 
     const asset = await environment.getEntry(newPost.sys.id);
+
     await asset.publish();
+    return asset;
   });
