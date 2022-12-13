@@ -13,7 +13,7 @@
     "apr-waterfall": "^3.0.3",
     "contentful-management": "^5.10.0",
     "dotenv": "^8.1.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "got": "^9.6.0",
     "lodash.flatten": "^4.4.0",
     "lodash.get": "^4.4.2",
